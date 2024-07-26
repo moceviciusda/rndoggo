@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "RNDogs",
+  "version": "0.0.1",
+  "description": "Improve your RND web experience with dogs",
+  "permissions": [
+    "activeTab",
+    "cookies",
+    "declarativeContent",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": ["https://telematics-rnd.teltonika.lt/*"],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "background": {
+    "service_worker": "src/background/background.ts",
+    "type": "module",
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://telematics-rnd.teltonika.lt/*"],
+      "js": ["src/contentScript/main.tsx"],
+      "run_at": "document_end"
+    }
+  ]
+}
