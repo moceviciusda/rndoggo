@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import RandomDog from './RandomDog';
+import WorkTime from './WorkTime';
 
 const dogsRoot = document.createElement('div');
 dogsRoot.id = 'rndogs-content-script-root';
@@ -30,6 +31,6 @@ ReactDOM.createRoot(document.getElementById(dogsRoot.id)!).render(
 
 ReactDOM.createRoot(document.getElementById(headerRoot.id)!).render(
   <React.StrictMode>
-    <header> Random Dogs </header>
+    <WorkTime />
   </React.StrictMode>
 );

@@ -1,10 +1,38 @@
-import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from './assets/vite.svg';
 import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const onClick = async () => {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+
+    if (!tab.id) {
+      return;
+    }
+
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => {
+        const button = document.getElementById('headlessui-menu-button-5');
+
+        if (!button) {
+          return;
+        }
+
+        button.addEventListener('click', () => {
+          console.log('button clicked');
+          // alert after 5s
+          setTimeout(() => {
+            chrome.tabs.highlight({ tabs: tab.id! });
+            button.click();
+          }, 5000);
+        });
+      },
+    });
+  };
 
   return (
     <>
@@ -18,9 +46,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+        <button onClick={onClick}>count is xd</button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
