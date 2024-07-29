@@ -5,31 +5,34 @@ const WorkTime = () => {
     '#app > div > div > div > nav > div > div > div.flex.flex-row > div.nav-link.no-hover > div > button'
   ) as HTMLElement;
 
-  button!.addEventListener('click', () => {
-    console.log('button clicked');
-    // alert after 5s
-    setTimeout(() => {
-      chrome.runtime.sendMessage('start');
-    }, 11 * 60 * 1000);
-  });
+  button!.addEventListener(
+    'click',
+    () => {
+      console.log('button clicked');
+      setTimeout(() => {
+        chrome.runtime.sendMessage('startWork');
+      }, 11 * 60 * 1000);
+    },
+    { once: true }
+  );
 
   chrome.runtime.onMessage.addListener((message) => {
     if (message === 'startWork') {
       console.log('received StartWork message');
-      //   button!.click();
+      startWorkButton!.click();
 
-      startWorkButton.click();
+      button!.addEventListener(
+        'click',
+        () => {
+          console.log('button clicked');
+          setTimeout(() => {
+            chrome.runtime.sendMessage('start');
+          }, 10000);
+        },
+        { once: true }
+      );
     }
   });
-
-  //   useEffect(() => {
-  //     console.log('WorkTime mounted');
-  //     chrome.runtime.sendMessage('hello');
-
-  //     return () => {
-  //       console.log('WorkTime unmounted');
-  //     };
-  //   }, []);
 
   return <div>RNDOGS</div>;
 };

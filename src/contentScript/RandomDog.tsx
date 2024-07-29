@@ -65,7 +65,7 @@ function RandomDog() {
           bottom: '1rem',
         }}
       >
-        {loading ? 'Loading...' : 'New dog 🐶'}
+        {loading ? 'Loading...' : 'New dog 🐕'}
       </button>
     </div>
   );
