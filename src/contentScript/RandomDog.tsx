@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
+// import { defaultSettings, type TSettings } from '../background/background';
 
 function RandomDog() {
   const [dogSrc, setDogSrc] = useState<string | null>(null);
   const [refetch, setRefetch] = useState(false);
   const [loading, setLoading] = useState(true);
   const [containerHovered, setContainerHovered] = useState(false);
+
+  // const [settings, setSettings] = useState<TSettings>(defaultSettings)
+
+  // useEffect(() => {
+  //   chrome.runtime.sendMessage('getSettings', (response) => {
+  //     setSettings(response);
+  //   });
+  // }, []);
 
   useEffect(() => {
     setLoading(true);
