@@ -20,8 +20,10 @@ const rndCardContainer = document.querySelector(
 rndCardContainer.appendChild(dogsRoot);
 
 document
-  .querySelector('#app > div > div > div > header > div > div')!
-  .appendChild(headerRoot);
+  .querySelector(
+    '#app > div > div > div > header > div > div > div.flex.items-center'
+  )!
+  .insertAdjacentElement('afterend', headerRoot);
 
 ReactDOM.createRoot(document.getElementById(dogsRoot.id)!).render(
   <React.StrictMode>
