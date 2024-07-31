@@ -1,30 +1,67 @@
 import { useEffect, useState } from 'react';
-// import { defaultSettings, type TSettings } from '../background/background';
+import { type TState, type TSettings } from '../background/background';
 
 function RandomDog() {
-  const [dogSrc, setDogSrc] = useState<string | null>(null);
   const [refetch, setRefetch] = useState(false);
   const [loading, setLoading] = useState(true);
   const [containerHovered, setContainerHovered] = useState(false);
 
-  // const [settings, setSettings] = useState<TSettings>(defaultSettings)
+  const [settings, setSettings] = useState<TSettings>({
+    dogs: true,
+    cats: false,
+    autoStartWork: true,
+  });
 
-  // useEffect(() => {
-  //   chrome.runtime.sendMessage('getSettings', (response) => {
-  //     setSettings(response);
-  //   });
-  // }, []);
+  const [state, setState] = useState<TState>({
+    dogSrc: null,
+    catSrc: `https://cataas.com/cat/gif?rand=${Math.random()}`,
+  });
+
+  const { dogSrc, catSrc } = state;
+
+  console.log('dogSrc', dogSrc);
+  console.log('catSrc', catSrc);
+
+  useEffect(() => {
+    chrome.storage.sync.get('settings', (data) => {
+      setSettings(data.settings);
+    });
+
+    chrome.storage.sync.get('state', (data) => {
+      setState(data.state);
+    });
+
+    chrome.storage.onChanged.addListener((changes) => {
+      if (changes.settings) {
+        setSettings(changes.settings.newValue);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     setLoading(true);
 
-    fetch('https://random.dog/woof')
-      .then((response) => response.text())
-      .then((data) => {
-        setDogSrc(data);
+    if (settings.dogs) {
+      fetch('https://random.dog/woof')
+        .then((response) => response.text())
+        .then((data) => {
+          setState((prev) => ({ ...prev, dogSrc: data }));
+          setLoading(false);
+        });
+    } else {
+      setState((prev) => ({
+        ...prev,
+        catSrc: `https://cataas.com/cat/gif?rand=${Math.random()}`,
+      }));
+      setTimeout(() => {
         setLoading(false);
-      });
-  }, [refetch]);
+      }, 2000);
+    }
+  }, [refetch, settings.dogs]);
+
+  useEffect(() => {
+    chrome.storage.sync.set({ state });
+  }, [state]);
 
   return (
     <div
@@ -44,14 +81,26 @@ function RandomDog() {
       onMouseEnter={() => setContainerHovered(true)}
       onMouseLeave={() => setContainerHovered(false)}
     >
-      {dogSrc?.includes('.mp4') ? (
+      {settings.dogs ? (
+        dogSrc?.includes('.mp4') ? (
+          <video autoPlay loop muted style={{ objectFit: 'cover' }}>
+            <source src={`https://random.dog/${dogSrc}`} type='video/mp4' />
+          </video>
+        ) : (
+          <img
+            src={`https://random.dog/${dogSrc}`}
+            alt='Random dog'
+            style={{ objectFit: 'cover' }}
+          />
+        )
+      ) : catSrc?.includes('.mp4') ? (
         <video autoPlay loop muted style={{ objectFit: 'cover' }}>
-          <source src={`https://random.dog/${dogSrc}`} type='video/mp4' />
+          <source src={catSrc} type='video/mp4' />
         </video>
       ) : (
         <img
-          src={`https://random.dog/${dogSrc}`}
-          alt='Random dog'
+          src={catSrc ?? undefined}
+          alt='Random cat'
           style={{ objectFit: 'cover' }}
         />
       )}
@@ -67,14 +116,14 @@ function RandomDog() {
           color: 'white',
           border: 'none',
           borderRadius: '0.5rem',
-          cursor: 'pointer',
+          cursor: loading ? 'progress' : 'pointer',
           opacity: containerHovered ? 1 : 0,
           transition: 'opacity 0.2s',
           position: 'absolute',
           bottom: '1rem',
         }}
       >
-        {loading ? 'Loading...' : 'New dog 🐕'}
+        {loading ? 'Loading...' : settings.dogs ? 'New dog 🐕' : 'New cat 😻'}
       </button>
     </div>
   );

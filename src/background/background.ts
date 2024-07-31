@@ -9,7 +9,9 @@ export type TState = {
   catSrc: string | null;
 };
 
-export type TMessage<MType = 'getSettings' | 'setSettings' | 'endWork'> = {
+export type TMessage<
+  MType = 'getSettings' | 'setSettings' | 'endWork' | 'getState' | 'setState'
+> = {
   type: MType;
   payload: MType extends 'setSettings' ? TSettings : undefined;
 };
