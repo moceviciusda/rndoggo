@@ -57,7 +57,7 @@ function RandomDog() {
         setLoading(false);
       }, 2000);
     }
-  }, [refetch, settings.dogs]);
+  }, [refetch]);
 
   useEffect(() => {
     chrome.storage.sync.set({ state });

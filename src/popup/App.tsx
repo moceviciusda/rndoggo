@@ -3,14 +3,11 @@ import { type TSettings, defaultSettings } from '../background/background';
 
 function App() {
   const [settings, setSettings] = useState<TSettings>(defaultSettings);
+  const [iconScale, setIconScale] = useState(1);
 
   const [checkboxHovered, setCheckBoxHovered] = useState(false);
 
   useEffect(() => {
-    // chrome.runtime.sendMessage({ type: 'getSettings' }, (response) => {
-    //   console.log('response', response);
-    //   setSettings(response);
-    // });
     chrome.storage.sync.get('settings', (data) => {
       setSettings(data.settings);
     });
@@ -22,6 +19,11 @@ function App() {
     });
   }, []);
 
+  useEffect(() => {
+    setIconScale(1.2);
+    setTimeout(() => setIconScale(1), 300);
+  }, [settings.dogs]);
+
   return (
     <div
       style={{
@@ -29,43 +31,44 @@ function App() {
         display: 'flex',
         flexDirection: 'column',
         gap: '0.5rem',
-        minWidth: '320px',
+        minWidth: '326px',
         background: 'linear-gradient(70deg, #d53369, #daae51)',
         color: 'white',
         borderRadius: '0.5rem',
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
       }}
     >
-      <h1 style={{ height: '3rem', display: 'flex', alignItems: 'center' }}>
-        Hello from RN
-        {settings.dogs ? (
-          'Dogs'
-        ) : (
-          <>
-            <span>Dogs</span>
-            <div
-              style={{
-                background: 'linear-gradient(90deg, #210542, #d53369)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                color: 'transparent',
-                position: 'relative',
-                display: 'inline-block',
-                marginLeft: '-3.5rem',
-                transform: 'rotate(-10deg)',
-                top: '0.5rem',
-                fontSize: '2.5rem',
-                fontStyle: 'italic',
-                fontWeight: 'bolder',
-              }}
-            >
-              Cats
-            </div>
-          </>
-        )}
+      <h1
+        style={{
+          height: '3rem',
+          display: 'flex',
+          alignItems: 'center',
+          fontSize: '2rem',
+        }}
+      >
+        Hello from RNDogs
+        <div
+          style={{
+            background: 'linear-gradient(90deg, #210542, #d53369)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
+            position: 'relative',
+            display: 'inline-block',
+            marginLeft: '-5rem',
+            transform: `scale(${settings.dogs ? 0 : iconScale}) rotate(-10deg)`,
+            transition: 'transform 0.3s',
+            top: '0.5rem',
+            fontSize: '3rem',
+            fontStyle: 'italic',
+            fontWeight: 'bolder',
+          }}
+        >
+          Cats
+        </div>
       </h1>
 
-      <div style={{ fontSize: '0.9rem' }}>
+      <div style={{ fontSize: '1.25rem', paddingInline: '0.5rem' }}>
         <p>
           This is a simple extension that fetches a random cute image from an
           API and displays it on the RND page.
@@ -77,11 +80,12 @@ function App() {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: '1rem',
+          gap: '0.5rem',
           alignItems: 'stretch',
+          marginBottom: '1rem',
         }}
       >
-        <h2>
+        <h2 style={{ paddingInline: '0.5rem' }}>
           <strong>Settings:</strong>
         </h2>
 
@@ -97,7 +101,7 @@ function App() {
             style={{
               width: '90px',
               height: '48px',
-              backgroundColor: 'gray',
+              background: 'linear-gradient(90deg, #210542, #d53369)',
               borderRadius: '25px',
               position: 'relative',
               border: '2px solid white',
@@ -134,10 +138,19 @@ function App() {
               }}
             >
               {settings.dogs ? (
-                <span>🐶</span>
+                <span
+                  style={{
+                    transform: `scale(${iconScale})`,
+                    transition: 'transform 0.3s',
+                  }}
+                >
+                  🐶
+                </span>
               ) : (
                 <span
                   style={{
+                    transform: `scale(${iconScale})`,
+                    transition: 'transform 0.3s',
                     position: 'relative',
                     top: '-6px',
                   }}
@@ -155,9 +168,15 @@ function App() {
               whiteSpace: 'wrap',
               wordBreak: 'break-word',
               cursor: 'pointer',
-              fontSize: '1rem',
+              fontSize: checkboxHovered ? '1.25rem' : '1rem',
+              background: checkboxHovered
+                ? settings.autoStartWork
+                  ? 'crimson'
+                  : 'rgb(113, 131, 86)'
+                : 'transparent',
+              transition: 'font-size 0.3s, background 0.3s',
               gap: '0.25rem',
-              maxWidth: '50%',
+              width: '50%',
               fontWeight: 'bold',
               borderRadius: '999px',
               border: '2px solid white',
@@ -188,10 +207,13 @@ function App() {
                   settings.autoStartWork || checkboxHovered
                     ? 'linear-gradient(110deg, #210542, #d53369)'
                     : 'transparent',
-                opacity: checkboxHovered ? 0.7 : 1,
               }}
             />
-            Auto start work
+            {!checkboxHovered
+              ? 'Auto start work'
+              : settings.autoStartWork
+              ? 'Disable'
+              : 'Enable'}
           </label>
         </div>
       </div>
