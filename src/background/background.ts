@@ -51,7 +51,7 @@ chrome.runtime.onMessage.addListener(
       setTimeout(async () => {
         await chrome.windows.update(tab.windowId, { focused: true });
         await chrome.tabs.update(tab.id!, { active: true });
-        await chrome.tabs.sendMessage(tab.id!, 'startWork');
+        await chrome.tabs.sendMessage(tab.id!, { type: 'startWork' });
       }, 11 * 60 * 1000);
 
       let timeRemaining = 11 * 60;

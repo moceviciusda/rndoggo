@@ -5,7 +5,7 @@ const WorkTime = () => {
     ) as HTMLElement | null;
 
   const endWorkCallback = async () => {
-    await chrome.runtime.sendMessage('endWork');
+    await chrome.runtime.sendMessage({ type: 'endWork' });
     console.log('endWork message sent');
   };
 
@@ -27,7 +27,7 @@ const WorkTime = () => {
   });
 
   chrome.runtime.onMessage.addListener((message) => {
-    if (message === 'startWork') {
+    if (message.type === 'startWork') {
       console.log('message received', message);
       workButton!.click();
     }
