@@ -1,15 +1,24 @@
 import { useEffect, useState } from 'react';
-import { TSettings, defaultSettings } from '../background/background';
+import { type TSettings, defaultSettings } from '../background/background';
 
 function App() {
   const [settings, setSettings] = useState<TSettings>(defaultSettings);
 
-  const [buttonHovered, setButtonHovered] = useState(false);
+  const [checkboxHovered, setCheckBoxHovered] = useState(false);
 
   useEffect(() => {
-    chrome.runtime.sendMessage({ type: 'getSettings' }, (response) => {
-      console.log('response', response);
-      setSettings(response);
+    // chrome.runtime.sendMessage({ type: 'getSettings' }, (response) => {
+    //   console.log('response', response);
+    //   setSettings(response);
+    // });
+    chrome.storage.sync.get('settings', (data) => {
+      setSettings(data.settings);
+    });
+
+    chrome.storage.sync.onChanged.addListener((changes) => {
+      if (changes.settings) {
+        setSettings(changes.settings.newValue);
+      }
     });
   }, []);
 
@@ -76,7 +85,14 @@ function App() {
           <strong>Settings:</strong>
         </h2>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            gap: '1rem',
+          }}
+        >
           <div
             style={{
               width: '90px',
@@ -88,11 +104,13 @@ function App() {
               cursor: 'pointer',
             }}
             onClick={() => {
-              setSettings((prev) => ({
-                ...prev,
-                dogs: !prev.dogs,
-                cats: !prev.cats,
-              }));
+              chrome.storage.sync.set({
+                settings: {
+                  ...settings,
+                  dogs: !settings.dogs,
+                  cats: !settings.cats,
+                },
+              });
             }}
           >
             <div
@@ -130,46 +148,52 @@ function App() {
             </div>
           </div>
 
-          <label>
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              whiteSpace: 'wrap',
+              wordBreak: 'break-word',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              gap: '0.25rem',
+              maxWidth: '50%',
+              fontWeight: 'bold',
+              borderRadius: '999px',
+              border: '2px solid white',
+              height: '48px',
+            }}
+            onMouseEnter={() => setCheckBoxHovered(true)}
+            onMouseLeave={() => setCheckBoxHovered(false)}
+          >
             <input
               type='checkbox'
               checked={settings.autoStartWork}
               onChange={(e) =>
-                setSettings((prev) => ({
-                  ...prev,
-                  autoStartWork: e.target.checked,
-                }))
+                chrome.storage.sync.set({
+                  settings: { ...settings, autoStartWork: e.target.checked },
+                })
               }
+              style={{
+                margin: 0,
+                appearance: 'none',
+                minWidth: '54px',
+                minHeight: '54px',
+                borderRadius: '999px',
+                border: '4px solid white',
+                cursor: 'pointer',
+                position: 'relative',
+                transition: 'background 0.3s, opacity 0.3s',
+                background:
+                  settings.autoStartWork || checkboxHovered
+                    ? 'linear-gradient(110deg, #210542, #d53369)'
+                    : 'transparent',
+                opacity: checkboxHovered ? 0.7 : 1,
+              }}
             />
             Auto start work
           </label>
         </div>
-
-        <button
-          style={{
-            padding: '1rem',
-            background: buttonHovered
-              ? 'linear-gradient(70deg, #daae51, #d53369)'
-              : 'linear-gradient(70deg, #210542, #d53369)',
-            color: 'white',
-            border: '2px solid white',
-            borderRadius: '99rem',
-            cursor: 'pointer',
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            transition: 'background 0.3s',
-          }}
-          onMouseEnter={() => setButtonHovered(true)}
-          onMouseLeave={() => setButtonHovered(false)}
-          onClick={() => {
-            chrome.runtime.sendMessage({
-              type: 'setSettings',
-              payload: settings,
-            });
-          }}
-        >
-          Save
-        </button>
       </div>
     </div>
   );

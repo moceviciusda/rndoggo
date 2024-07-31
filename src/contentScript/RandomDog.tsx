@@ -82,7 +82,7 @@ function RandomDog() {
       onMouseLeave={() => setContainerHovered(false)}
     >
       {settings.dogs ? (
-        dogSrc?.includes('.mp4') ? (
+        dogSrc?.includes('.mp4') || dogSrc?.includes('.webm') ? (
           <video autoPlay loop muted style={{ objectFit: 'cover' }}>
             <source src={`https://random.dog/${dogSrc}`} type='video/mp4' />
           </video>
