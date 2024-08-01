@@ -28,8 +28,6 @@ workButton.addEventListener('click', () => {
   if (confirmButton) {
     confirmButton.removeEventListener('click', endWorkCallback);
     confirmButton.addEventListener('click', endWorkCallback, { once: true });
-    // const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-    // confirmButton.style.backgroundColor = `#${randomColor}`;
     confirmButton.appendChild(document.createTextNode(' 😜'));
     confirmButton.style.fontSize = '1.5rem';
   } else {

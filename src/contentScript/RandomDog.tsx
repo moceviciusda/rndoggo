@@ -13,7 +13,6 @@ function RandomDog() {
 
   const [state, setState] = useState<TState>({
     dogSrc: null,
-    // catSrc: `https://cataas.com/cat/gif?rand=${Math.random()}`,
     catSrc: null,
   });
 
@@ -103,7 +102,6 @@ function RandomDog() {
         </video>
       ) : (
         <img
-          // src={catSrc ?? undefined}
           src={catSrc ?? ''}
           alt='Random cat'
           style={{ objectFit: 'cover' }}

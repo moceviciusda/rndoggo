@@ -1,30 +1,25 @@
-# React + TypeScript + Vite
+# RNDogs Chrome Extension
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a Google Chrome extension that fetches a random cute image from an API and displays it on the RND dashboard.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Fetches random cute images/gifs/videos of dogs and cats
+- Automatically displays the fetched image on the RND dashboard
+- Can end your lunch break automatically after 11 minutes
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Build the extension by running `npm run build`
+2. Open Google Chrome and go to `chrome://extensions`
+3. Enable the "Developer mode" toggle on the top right corner
+4. Click on "Load unpacked" and select the `dist` folder in the project directory
+5. The RNDogs/Cats extension will be added to your Chrome browser
 
-- Configure the top-level `parserOptions` property like this:
+## Usage / Configuration
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. Open the RND page - enjoy random cute dog/cat of the day on your RND dashboard
+2. Click on the RNDogs/Cats extension icon on the top right corner of your browser to configure the extension
+3. You can enable/disable the automatic lunch break end feature by toggling the button
+4. You can switch between dog and cat images by using the switch button
+5. You can refresh the image by hovering over the image and clicking on the `new dog 🐕` or `new cat 😻` button
