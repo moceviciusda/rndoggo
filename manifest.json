@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "RNDogs",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Improve your RND web experience with dogs",
   "permissions": [
     "activeTab",
