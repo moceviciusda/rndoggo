@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { type TState, type TSettings } from '../background/background';
 
 function RandomDog() {
-  const [refetch, setRefetch] = useState(false);
   const [loading, setLoading] = useState(true);
   const [containerHovered, setContainerHovered] = useState(false);
 
@@ -14,13 +13,31 @@ function RandomDog() {
 
   const [state, setState] = useState<TState>({
     dogSrc: null,
-    catSrc: `https://cataas.com/cat/gif?rand=${Math.random()}`,
+    // catSrc: `https://cataas.com/cat/gif?rand=${Math.random()}`,
+    catSrc: null,
   });
 
   const { dogSrc, catSrc } = state;
 
-  console.log('dogSrc', dogSrc);
-  console.log('catSrc', catSrc);
+  const fetchDog = () => {
+    setLoading(true);
+    fetch('https://random.dog/woof')
+      .then((response) => response.text())
+      .then((data) => {
+        setState((prev) => ({ ...prev, dogSrc: data }));
+        setLoading(false);
+      });
+  };
+
+  const fetchCat = () => {
+    setLoading(true);
+    fetch('https://api.thecatapi.com/v1/images/search?gif=true')
+      .then((response) => response.json())
+      .then((data) => {
+        setState((prev) => ({ ...prev, catSrc: data[0].url }));
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
     chrome.storage.sync.get('settings', (data) => {
@@ -35,29 +52,16 @@ function RandomDog() {
       if (changes.settings) {
         setSettings(changes.settings.newValue);
       }
+      if (changes.state) {
+        setState(changes.state.newValue);
+      }
     });
   }, []);
 
   useEffect(() => {
-    setLoading(true);
-
-    if (settings.dogs) {
-      fetch('https://random.dog/woof')
-        .then((response) => response.text())
-        .then((data) => {
-          setState((prev) => ({ ...prev, dogSrc: data }));
-          setLoading(false);
-        });
-    } else {
-      setState((prev) => ({
-        ...prev,
-        catSrc: `https://cataas.com/cat/gif?rand=${Math.random()}`,
-      }));
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
-    }
-  }, [refetch]);
+    !dogSrc && fetchDog();
+    !catSrc && fetchCat();
+  }, []);
 
   useEffect(() => {
     chrome.storage.sync.set({ state });
@@ -99,15 +103,14 @@ function RandomDog() {
         </video>
       ) : (
         <img
-          src={catSrc ?? undefined}
+          // src={catSrc ?? undefined}
+          src={catSrc ?? ''}
           alt='Random cat'
           style={{ objectFit: 'cover' }}
         />
       )}
       <button
-        onClick={() => {
-          setRefetch((prev) => !prev);
-        }}
+        onClick={() => (settings.dogs ? fetchDog() : fetchCat())}
         disabled={loading}
         style={{
           padding: '0.5rem 1rem',
@@ -121,12 +124,44 @@ function RandomDog() {
           transition: 'opacity 0.2s',
           position: 'absolute',
           bottom: '1rem',
+          fontSize: '1.25rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem',
+          whiteSpace: 'nowrap',
         }}
       >
-        {loading ? 'Loading...' : settings.dogs ? 'New dog 🐕' : 'New cat 😻'}
+        {settings.dogs ? (
+          <>new dog {loading ? <LoadingSpinner /> : '🐕'}</>
+        ) : (
+          <>new cat {loading ? <LoadingSpinner /> : '😻'}</>
+        )}
       </button>
     </div>
   );
 }
+
+const LoadingSpinner = () => (
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      width: '100%',
+    }}
+  >
+    <div
+      style={{
+        width: '20px',
+        height: '20px',
+        border: '5px solid rgb(32 33 36)',
+        borderTop: '5px solid white',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite',
+      }}
+    />
+  </div>
+);
 
 export default RandomDog;

@@ -28,8 +28,10 @@ workButton.addEventListener('click', () => {
   if (confirmButton) {
     confirmButton.removeEventListener('click', endWorkCallback);
     confirmButton.addEventListener('click', endWorkCallback, { once: true });
-    const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-    confirmButton.style.backgroundColor = `#${randomColor}`;
+    // const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+    // confirmButton.style.backgroundColor = `#${randomColor}`;
+    confirmButton.appendChild(document.createTextNode(' 😜'));
+    confirmButton.style.fontSize = '1.5rem';
   } else {
     console.log('confirm button not found');
   }
@@ -79,7 +81,11 @@ const WorkTime = () => {
       : 'Auto Start Work Disabled';
   }, [settings.autoStartWork]);
 
-  return <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>RNDogs 🐶</h2>;
+  return (
+    <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold' }}>
+      {settings.dogs ? 'RNDogs 🐶' : 'Catsss 😼'}
+    </h2>
+  );
 };
 
 export default WorkTime;
