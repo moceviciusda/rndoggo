@@ -56,7 +56,9 @@ function App() {
             position: 'relative',
             display: 'inline-block',
             marginLeft: '-5rem',
-            transform: `scale(${settings.dogs ? 0 : iconScale}) rotate(-10deg)`,
+            transform: `scale(${settings.dogs ? 0 : iconScale}) rotate(${
+              (settings.dogs ? 0 : 360 * iconScale) - 10
+            }deg)`,
             transition: 'transform 0.3s',
             top: '0.5rem',
             fontSize: '3rem',
@@ -203,10 +205,9 @@ function App() {
                 cursor: 'pointer',
                 position: 'relative',
                 transition: 'background 0.3s, opacity 0.3s',
-                background:
-                  settings.autoStartWork || checkboxHovered
-                    ? 'linear-gradient(110deg, #210542, #d53369)'
-                    : 'transparent',
+                background: settings.autoStartWork
+                  ? 'linear-gradient(110deg, #210542, #d53369)'
+                  : 'transparent',
               }}
             />
             {!checkboxHovered
