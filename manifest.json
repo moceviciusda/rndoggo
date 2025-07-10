@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "RNDogs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Improve your RND web experience with dogs",
   "permissions": [
     "activeTab",
@@ -25,6 +25,12 @@
       "matches": ["https://telematics-rnd.teltonika.lt/*"],
       "js": ["src/contentScript/main.tsx"],
       "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/client-BPB1s40-.js"],
+      "matches": ["<all_urls>"]
     }
   ]
 }
